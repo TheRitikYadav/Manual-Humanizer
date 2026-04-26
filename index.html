@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manual Humanizer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <span class="brand-mark">MH</span>
+          <div>
+            <h1>Manual Humanizer</h1>
+            <p class="tagline">Rewrite sentence-by-sentence until it sounds genuinely you.</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button id="themeToggle" class="ghost" title="Toggle theme">Dark</button>
+          <button id="clearCacheBtn" class="ghost danger" title="Wipe saved progress">Clear Cache</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card" id="inputSection">
+        <div class="card-header">
+          <h2>1. Paste your full draft</h2>
+          <div class="meta" id="inputMeta">0 words • 0 chars</div>
+        </div>
+        <textarea
+          id="fullText"
+          placeholder="Paste your complete writing here. Separate paragraphs with blank lines."
+        ></textarea>
+        <div class="button-row">
+          <button id="startBtn" class="primary">Start Sentence Review</button>
+          <button id="resumeBtn" class="ghost hidden">Resume Last Session</button>
+        </div>
+      </section>
+
+      <section class="workspace hidden" id="workspace">
+        <aside class="sidebar card">
+          <div class="card-header">
+            <h2>Sentences</h2>
+            <div class="meta" id="editedCount">0 / 0 edited</div>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <ol class="sentence-list" id="sentenceList"></ol>
+        </aside>
+
+        <section class="editor card">
+          <div class="card-header">
+            <h2>2. Refine current sentence</h2>
+            <div class="meta">
+              <span id="paragraphText">Paragraph 1</span>
+              <span class="dot">•</span>
+              <span id="progressText">Sentence 1 of 1</span>
+            </div>
+          </div>
+
+          <div class="reference">
+            <div class="reference-label">Original</div>
+            <div class="reference-text" id="originalText"></div>
+          </div>
+
+          <label for="sentenceEditor">Your version</label>
+          <textarea id="sentenceEditor" spellcheck="true"></textarea>
+          <div class="meta meta-row">
+            <span id="sentenceMeta">0 words • 0 chars</span>
+            <span class="hint">Tip: click a word below to find synonyms</span>
+          </div>
+
+          <div class="word-chips" id="wordChips" aria-label="Click any word for synonyms"></div>
+
+          <div class="button-row">
+            <button id="prevBtn" class="ghost">← Previous</button>
+            <button id="resetSentenceBtn" class="ghost">Reset Sentence</button>
+            <button id="saveNextBtn" class="primary">Save & Next →</button>
+          </div>
+          <div class="shortcut-hint">
+            Shortcuts: <kbd>Ctrl/⌘ + ←</kbd> previous · <kbd>Ctrl/⌘ + →</kbd> save &amp; next ·
+            <kbd>Ctrl/⌘ + R</kbd> reset sentence
+          </div>
+        </section>
+      </section>
+
+      <section class="card hidden" id="outputSection">
+        <div class="card-header">
+          <h2>3. Final humanized output</h2>
+          <div class="meta" id="outputMeta">0 words • 0 chars</div>
+        </div>
+        <textarea id="finalOutput" readonly placeholder="Your assembled output will appear here."></textarea>
+        <div class="button-row">
+          <button id="buildOutputBtn" class="ghost">Rebuild Output</button>
+          <button id="copyBtn" class="primary">Copy Output</button>
+          <button id="downloadBtn" class="ghost">Download .txt</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="popover hidden" id="synonymPopover" role="dialog" aria-label="Synonyms">
+      <div class="popover-header">
+        <strong id="popoverWord"></strong>
+        <button id="popoverClose" class="ghost small" aria-label="Close">✕</button>
+      </div>
+      <div class="popover-body" id="popoverBody">
+        <div class="popover-status">Click a word to see synonyms.</div>
+      </div>
+    </div>
+
+    <div class="toast hidden" id="toast"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

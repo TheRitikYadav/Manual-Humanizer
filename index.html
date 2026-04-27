@@ -17,6 +17,7 @@
           </div>
         </div>
         <div class="topbar-actions">
+          <button id="settingsBtn" class="ghost" title="AI settings">⚙ Settings</button>
           <button id="themeToggle" class="ghost" title="Toggle theme">Dark</button>
           <button id="clearCacheBtn" class="ghost danger" title="Wipe saved progress">Clear Cache</button>
         </div>
@@ -78,11 +79,22 @@
           <div class="button-row">
             <button id="prevBtn" class="ghost">← Previous</button>
             <button id="resetSentenceBtn" class="ghost">Reset Sentence</button>
+            <button id="tweakAIBtn" class="ai">✨ Tweak with AI</button>
             <button id="saveNextBtn" class="primary">Save & Next →</button>
           </div>
+
+          <div class="ai-panel hidden" id="aiPanel">
+            <div class="ai-panel-header">
+              <strong>AI variants</strong>
+              <span class="meta" id="aiPanelMeta"></span>
+              <button id="aiPanelClose" class="ghost small" aria-label="Close">✕</button>
+            </div>
+            <div class="ai-panel-body" id="aiPanelBody"></div>
+          </div>
+
           <div class="shortcut-hint">
             Shortcuts: <kbd>Ctrl/⌘ + ←</kbd> previous · <kbd>Ctrl/⌘ + →</kbd> save &amp; next ·
-            <kbd>Ctrl/⌘ + R</kbd> reset sentence
+            <kbd>Ctrl/⌘ + R</kbd> reset · <kbd>Ctrl/⌘ + I</kbd> tweak with AI
           </div>
         </section>
       </section>
@@ -108,6 +120,56 @@
       </div>
       <div class="popover-body" id="popoverBody">
         <div class="popover-status">Click a word to see synonyms.</div>
+      </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="settingsModal" role="dialog" aria-label="AI Settings">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>AI Settings</h2>
+          <button id="settingsClose" class="ghost small" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <label for="apiKey">OpenAI API key</label>
+          <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" />
+          <p class="hint small">
+            Stored only in your browser's localStorage. Calls go directly from your browser to OpenAI.
+          </p>
+
+          <label for="modelSelect">Model</label>
+          <select id="modelSelect">
+            <option value="gpt-4o-mini">gpt-4o-mini (fast & cheap)</option>
+            <option value="gpt-4o">gpt-4o (higher quality)</option>
+            <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+            <option value="gpt-4.1">gpt-4.1</option>
+          </select>
+
+          <label for="toneSelect">Tone</label>
+          <select id="toneSelect">
+            <option value="natural">Natural / human (default)</option>
+            <option value="casual">Casual</option>
+            <option value="conversational">Conversational</option>
+            <option value="professional">Professional</option>
+            <option value="friendly">Friendly</option>
+            <option value="academic">Academic</option>
+            <option value="concise">Concise</option>
+          </select>
+
+          <label for="variantCount">Number of variants per tweak</label>
+          <select id="variantCount">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+          </select>
+
+          <label for="customInstructions">Extra instructions (optional)</label>
+          <textarea id="customInstructions" rows="3" placeholder="e.g. Avoid em-dashes. Keep contractions. Match a Gen Z blog tone."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button id="settingsClear" class="ghost danger">Forget API key</button>
+          <button id="settingsSave" class="primary">Save</button>
+        </div>
       </div>
     </div>
 

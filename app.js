@@ -27,16 +27,44 @@ const downloadBtn = document.getElementById("downloadBtn");
 
 const themeToggle = document.getElementById("themeToggle");
 const clearCacheBtn = document.getElementById("clearCacheBtn");
+const settingsBtn = document.getElementById("settingsBtn");
 
 const popover = document.getElementById("synonymPopover");
 const popoverWord = document.getElementById("popoverWord");
 const popoverBody = document.getElementById("popoverBody");
 const popoverClose = document.getElementById("popoverClose");
 
+const settingsModal = document.getElementById("settingsModal");
+const settingsClose = document.getElementById("settingsClose");
+const settingsSave = document.getElementById("settingsSave");
+const settingsClear = document.getElementById("settingsClear");
+const apiKeyInput = document.getElementById("apiKey");
+const modelSelect = document.getElementById("modelSelect");
+const toneSelect = document.getElementById("toneSelect");
+const variantCount = document.getElementById("variantCount");
+const customInstructions = document.getElementById("customInstructions");
+
+const tweakAIBtn = document.getElementById("tweakAIBtn");
+const aiPanel = document.getElementById("aiPanel");
+const aiPanelBody = document.getElementById("aiPanelBody");
+const aiPanelMeta = document.getElementById("aiPanelMeta");
+const aiPanelClose = document.getElementById("aiPanelClose");
+
 const toast = document.getElementById("toast");
 
 const CACHE_KEY = "manual-humanizer-cache-v2";
 const THEME_KEY = "manual-humanizer-theme";
+const SETTINGS_KEY = "manual-humanizer-settings-v1";
+
+const DEFAULT_SETTINGS = {
+  apiKey: "",
+  model: "gpt-4o-mini",
+  tone: "natural",
+  variants: 3,
+  customInstructions: "",
+};
+
+let settings = { ...DEFAULT_SETTINGS };
 
 let sentenceItems = [];
 let currentIndex = 0;
@@ -408,6 +436,233 @@ function toggleTheme() {
   applyTheme(next);
 }
 
+/* ---------------- settings ---------------- */
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    settings = { ...DEFAULT_SETTINGS, ...parsed };
+  } catch (_e) {
+    settings = { ...DEFAULT_SETTINGS };
+  }
+}
+
+function persistSettings() {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch (_e) {
+    /* ignore */
+  }
+}
+
+function openSettings() {
+  apiKeyInput.value = settings.apiKey || "";
+  modelSelect.value = settings.model || DEFAULT_SETTINGS.model;
+  toneSelect.value = settings.tone || DEFAULT_SETTINGS.tone;
+  variantCount.value = String(settings.variants || DEFAULT_SETTINGS.variants);
+  customInstructions.value = settings.customInstructions || "";
+  settingsModal.classList.remove("hidden");
+}
+
+function closeSettings() {
+  settingsModal.classList.add("hidden");
+}
+
+function saveSettingsFromForm() {
+  settings = {
+    apiKey: apiKeyInput.value.trim(),
+    model: modelSelect.value,
+    tone: toneSelect.value,
+    variants: parseInt(variantCount.value, 10) || 3,
+    customInstructions: customInstructions.value.trim(),
+  };
+  persistSettings();
+  closeSettings();
+  showToast("Settings saved");
+}
+
+function forgetApiKey() {
+  if (!confirm("Forget the saved API key from this browser?")) return;
+  settings.apiKey = "";
+  persistSettings();
+  apiKeyInput.value = "";
+  showToast("API key removed");
+}
+
+/* ---------------- AI tweak ---------------- */
+
+function buildPrompt(sentence) {
+  const tone = settings.tone || "natural";
+  const variants = settings.variants || 3;
+  const extra = settings.customInstructions
+    ? `\nExtra instructions: ${settings.customInstructions}`
+    : "";
+
+  const systemMsg =
+    "You rewrite individual sentences so they sound naturally human-written. " +
+    "You preserve meaning exactly. You avoid AI-detection patterns: no overuse of em-dashes, " +
+    "no perfectly parallel structures, no robotic transitions, no filler like 'in conclusion'. " +
+    "Use natural rhythm, subtle imperfection, and conversational phrasing where appropriate.";
+
+  const userMsg =
+    `Rewrite the following sentence into ${variants} distinct human-sounding variations.\n` +
+    `Tone: ${tone}.${extra}\n` +
+    `Return ONLY a JSON object of the form {"variants": ["...", "...", "..."]} with exactly ${variants} variants.\n` +
+    `Sentence: """${sentence}"""`;
+
+  return { systemMsg, userMsg };
+}
+
+function showAiLoading() {
+  aiPanel.classList.remove("hidden");
+  aiPanelMeta.textContent = `model: ${settings.model} · tone: ${settings.tone}`;
+  aiPanelBody.innerHTML =
+    '<div class="ai-loading"><span class="spinner"></span> Generating variants…</div>';
+}
+
+function showAiError(message) {
+  aiPanel.classList.remove("hidden");
+  aiPanelBody.innerHTML = `<div class="ai-error">${message}</div>`;
+}
+
+function showAiVariants(variants) {
+  aiPanel.classList.remove("hidden");
+  if (!variants.length) {
+    aiPanelBody.innerHTML =
+      '<div class="ai-error">No variants returned. Try again.</div>';
+    return;
+  }
+  aiPanelBody.innerHTML = "";
+  variants.forEach((text) => {
+    const card = document.createElement("div");
+    card.className = "ai-variant";
+
+    const t = document.createElement("div");
+    t.className = "variant-text";
+    t.textContent = text;
+
+    const actions = document.createElement("div");
+    actions.className = "variant-actions";
+
+    const useBtn = document.createElement("button");
+    useBtn.className = "primary small";
+    useBtn.textContent = "Use this";
+    useBtn.addEventListener("click", () => {
+      applyVariantToCurrent(text);
+    });
+
+    const copyBtn2 = document.createElement("button");
+    copyBtn2.className = "ghost small";
+    copyBtn2.textContent = "Copy";
+    copyBtn2.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Variant copied");
+      } catch (_e) {
+        showToast("Copy failed");
+      }
+    });
+
+    actions.appendChild(copyBtn2);
+    actions.appendChild(useBtn);
+    card.appendChild(t);
+    card.appendChild(actions);
+    aiPanelBody.appendChild(card);
+  });
+}
+
+function applyVariantToCurrent(text) {
+  if (!sentenceItems.length) return;
+  sentenceEditor.value = text;
+  saveCurrentSentence({ rerenderChips: true });
+  buildFinalOutput();
+  aiPanel.classList.add("hidden");
+  showToast("Variant applied");
+}
+
+async function tweakWithAI() {
+  if (!sentenceItems.length) {
+    showToast("Start a session first.");
+    return;
+  }
+  if (!settings.apiKey) {
+    showToast("Add your OpenAI API key in Settings first.");
+    openSettings();
+    return;
+  }
+
+  const sentence = sentenceEditor.value.trim();
+  if (!sentence) {
+    showToast("Sentence is empty.");
+    return;
+  }
+
+  saveCurrentSentence();
+  tweakAIBtn.disabled = true;
+  showAiLoading();
+
+  const { systemMsg, userMsg } = buildPrompt(sentence);
+
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${settings.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: settings.model,
+        temperature: 0.9,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: systemMsg },
+          { role: "user", content: userMsg },
+        ],
+      }),
+    });
+
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => "");
+      let msg = `OpenAI error ${res.status}`;
+      try {
+        const parsed = JSON.parse(errBody);
+        if (parsed.error && parsed.error.message) msg = parsed.error.message;
+      } catch (_e) {
+        /* ignore */
+      }
+      showAiError(msg);
+      return;
+    }
+
+    const data = await res.json();
+    const content = data?.choices?.[0]?.message?.content || "";
+
+    let variants = [];
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed.variants)) {
+        variants = parsed.variants
+          .map((v) => (typeof v === "string" ? v.trim() : ""))
+          .filter(Boolean);
+      }
+    } catch (_e) {
+      const lines = content
+        .split("\n")
+        .map((l) => l.replace(/^[-*\d.\s)]+/, "").trim())
+        .filter(Boolean);
+      variants = lines.slice(0, settings.variants || 3);
+    }
+
+    showAiVariants(variants);
+  } catch (err) {
+    showAiError(`Network error: ${err.message || err}`);
+  } finally {
+    tweakAIBtn.disabled = false;
+  }
+}
+
 /* ---------------- events ---------------- */
 
 startBtn.addEventListener("click", () => {
@@ -486,6 +741,17 @@ downloadBtn.addEventListener("click", () => {
 themeToggle.addEventListener("click", toggleTheme);
 clearCacheBtn.addEventListener("click", clearCache);
 
+settingsBtn.addEventListener("click", openSettings);
+settingsClose.addEventListener("click", closeSettings);
+settingsSave.addEventListener("click", saveSettingsFromForm);
+settingsClear.addEventListener("click", forgetApiKey);
+settingsModal.addEventListener("click", (e) => {
+  if (e.target === settingsModal) closeSettings();
+});
+
+tweakAIBtn.addEventListener("click", tweakWithAI);
+aiPanelClose.addEventListener("click", () => aiPanel.classList.add("hidden"));
+
 popoverClose.addEventListener("click", () => popover.classList.add("hidden"));
 document.addEventListener("click", (e) => {
   if (popover.classList.contains("hidden")) return;
@@ -497,6 +763,7 @@ document.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     popover.classList.add("hidden");
+    if (!settingsModal.classList.contains("hidden")) closeSettings();
     return;
   }
   if (!(e.ctrlKey || e.metaKey)) return;
@@ -509,6 +776,9 @@ document.addEventListener("keydown", (e) => {
   } else if (e.key.toLowerCase() === "r") {
     e.preventDefault();
     resetCurrentSentence();
+  } else if (e.key.toLowerCase() === "i") {
+    e.preventDefault();
+    tweakWithAI();
   }
 });
 
@@ -517,6 +787,7 @@ document.addEventListener("keydown", (e) => {
 (function init() {
   const savedTheme = localStorage.getItem(THEME_KEY) || "light";
   applyTheme(savedTheme);
+  loadSettings();
   loadFromCache();
   updateMetaFor(inputMeta, fullText.value);
   updateMetaFor(outputMeta, finalOutput.value);

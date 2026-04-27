@@ -2,12 +2,186 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manual Humanizer</title>
+
+    <title>Manual Humanizer — Rewrite AI Text Sentence-by-Sentence | Free Tool</title>
+    <meta
+      name="description"
+      content="Free browser-based tool to humanize AI-generated text. Edit one sentence at a time with a built-in thesaurus, click-to-replace synonyms, and optional OpenAI-powered rewrites. No signup, no upload — runs entirely in your browser."
+    />
+    <meta
+      name="keywords"
+      content="manual humanizer, AI humanizer, humanize AI text, humanize ChatGPT text, sentence rewriter, paraphrasing tool, free humanizer, anti-AI detection, AI to human text, online thesaurus, sentence editor, OpenAI humanizer"
+    />
+    <meta name="author" content="Ritik Yadav" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#2563eb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1420" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="application-name" content="Manual Humanizer" />
+    <meta name="apple-mobile-web-app-title" content="Manual Humanizer" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="canonical" href="https://theritikyadav.github.io/Manual-Humanizer/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Manual Humanizer" />
+    <meta property="og:title" content="Manual Humanizer — Rewrite AI Text Sentence-by-Sentence" />
+    <meta
+      property="og:description"
+      content="Free browser-only tool to manually humanize AI-generated text. Sentence-by-sentence editing, click-to-replace thesaurus, and optional OpenAI-powered tweaks."
+    />
+    <meta property="og:url" content="https://theritikyadav.github.io/Manual-Humanizer/" />
+    <meta property="og:image" content="https://theritikyadav.github.io/Manual-Humanizer/og-image.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Manual Humanizer — sentence-by-sentence text humanizer" />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Manual Humanizer — Rewrite AI Text Sentence-by-Sentence" />
+    <meta
+      name="twitter:description"
+      content="Free, browser-only tool to humanize AI-generated text — manually, sentence by sentence."
+    />
+    <meta name="twitter:image" content="https://theritikyadav.github.io/Manual-Humanizer/og-image.svg" />
+    <meta name="twitter:image:alt" content="Manual Humanizer app preview" />
+    <meta name="twitter:creator" content="@TheRitikYadav" />
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="apple-touch-icon" href="favicon.svg" />
+    <link rel="manifest" href="manifest.json" />
+
+    <link rel="preconnect" href="https://api.datamuse.com" crossorigin />
+    <link rel="preconnect" href="https://api.openai.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.datamuse.com" />
+    <link rel="dns-prefetch" href="https://api.openai.com" />
+
+    <link rel="preload" href="styles.css" as="style" />
     <link rel="stylesheet" href="styles.css" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Manual Humanizer",
+        "alternateName": "AI Text Humanizer",
+        "url": "https://theritikyadav.github.io/Manual-Humanizer/",
+        "description": "Free browser-based tool to humanize AI-generated text by editing one sentence at a time, with a built-in thesaurus and optional OpenAI-powered rewrites.",
+        "applicationCategory": "WritingApplication",
+        "applicationSubCategory": "Text Editor",
+        "operatingSystem": "Any (web browser)",
+        "browserRequirements": "Requires JavaScript and a modern browser",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Ritik Yadav",
+          "url": "https://github.com/TheRitikYadav"
+        },
+        "publisher": {
+          "@type": "Person",
+          "name": "Ritik Yadav",
+          "url": "https://github.com/TheRitikYadav"
+        },
+        "featureList": [
+          "Paste-once, edit sentence-by-sentence workflow",
+          "Automatic paragraph and sentence detection",
+          "Click-to-replace thesaurus powered by Datamuse",
+          "Optional OpenAI-powered humanization with multiple tone presets",
+          "Auto-save to browser cache (refresh-safe)",
+          "Light and dark themes",
+          "Copy or download the final humanized text",
+          "Keyboard shortcuts for fast editing"
+        ],
+        "softwareVersion": "1.1",
+        "inLanguage": "en"
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Manual Humanizer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Manual Humanizer is a free browser-only tool that helps you rewrite AI-generated or robotic-sounding text into natural, human-sounding writing. It splits your draft into paragraphs and sentences and lets you refine each sentence one at a time."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Manual Humanizer free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The core editor, thesaurus, and export features are completely free. The optional AI tweak feature uses your own OpenAI API key, so you only pay OpenAI for the tokens you use."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Manual Humanizer send my text to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Your text never leaves your device, except for individual word lookups sent to the public Datamuse API for synonyms, and per-sentence calls to OpenAI when you explicitly click the AI tweak button."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the AI tweak feature work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You add your OpenAI API key in Settings, then click Tweak with AI on any sentence. The tool sends only that sentence to OpenAI's chat completions API and returns several human-sounding variants. You pick the one you like, and it replaces the current sentence."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Will my work be lost if I refresh the page?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Manual Humanizer auto-saves your draft, every sentence edit, the current position, and the final output to your browser's localStorage. A refresh restores everything automatically."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which browsers are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Any modern browser that supports JavaScript: latest versions of Chrome, Edge, Firefox, Safari, Brave, and Arc. No installation required."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://theritikyadav.github.io/Manual-Humanizer/"
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
-    <header class="topbar">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="topbar" role="banner">
       <div class="topbar-inner">
         <div class="brand">
           <span class="brand-mark">MH</span>
@@ -24,10 +198,10 @@
       </div>
     </header>
 
-    <main class="container">
-      <section class="card" id="inputSection">
+    <main class="container" id="main" role="main">
+      <section class="card" id="inputSection" aria-labelledby="step1-heading">
         <div class="card-header">
-          <h2>1. Paste your full draft</h2>
+          <h2 id="step1-heading">1. Paste your full draft</h2>
           <div class="meta" id="inputMeta">0 words • 0 chars</div>
         </div>
         <textarea
@@ -99,9 +273,9 @@
         </section>
       </section>
 
-      <section class="card hidden" id="outputSection">
+      <section class="card hidden" id="outputSection" aria-labelledby="step3-heading">
         <div class="card-header">
-          <h2>3. Final humanized output</h2>
+          <h2 id="step3-heading">3. Final humanized output</h2>
           <div class="meta" id="outputMeta">0 words • 0 chars</div>
         </div>
         <textarea id="finalOutput" readonly placeholder="Your assembled output will appear here."></textarea>
@@ -111,7 +285,105 @@
           <button id="downloadBtn" class="ghost">Download .txt</button>
         </div>
       </section>
+
+      <section class="card seo-content" id="aboutSection" aria-labelledby="about-heading">
+        <h2 id="about-heading">About Manual Humanizer</h2>
+        <p>
+          <strong>Manual Humanizer</strong> is a free, browser-based tool that helps writers,
+          students, marketers, and developers rewrite AI-generated or robotic-sounding text into
+          natural, human-sounding prose. Instead of pressing one magic button, it gives you a
+          guided, sentence-by-sentence workflow so the final text actually reads like
+          <em>you</em> — because you reviewed every line.
+        </p>
+        <p>
+          Paste your full draft once, and Manual Humanizer automatically detects paragraphs and
+          sentences. You then refine each sentence in turn, with a built-in
+          <a
+            href="https://www.datamuse.com/api/"
+            rel="nofollow noopener"
+            target="_blank"
+            >Datamuse-powered</a
+          >
+          thesaurus that lets you click any word to see and apply synonyms instantly. When you want
+          a faster rewrite, the optional <strong>Tweak with AI</strong> button uses your own OpenAI
+          API key to generate several humanized variants of the current sentence — picking the best
+          one is one click away.
+        </p>
+
+        <h3>Key features</h3>
+        <ul>
+          <li>Sentence-by-sentence editor with paragraph structure preserved.</li>
+          <li>Click-to-replace thesaurus &amp; synonym lookup (no signup, free API).</li>
+          <li>Optional OpenAI-powered humanization with multiple tone presets.</li>
+          <li>Auto-save to browser cache so refreshing won't lose your progress.</li>
+          <li>Light &amp; dark themes, keyboard shortcuts, copy or download as .txt.</li>
+          <li>Runs 100% in your browser. Your text never goes to a third-party server (except per-sentence calls to the AI you explicitly trigger).</li>
+        </ul>
+
+        <h3>Frequently asked questions</h3>
+
+        <details>
+          <summary><strong>Is Manual Humanizer free?</strong></summary>
+          <p>
+            Yes. The editor, thesaurus, copy, and download features are 100% free. The optional AI
+            tweak uses your own OpenAI API key, so you only pay OpenAI for what you use.
+          </p>
+        </details>
+
+        <details>
+          <summary><strong>Does it send my text anywhere?</strong></summary>
+          <p>
+            Your text stays in your browser. Synonym lookups send only individual words to the
+            public Datamuse API. The AI tweak sends only the current sentence to OpenAI, and only
+            when you click the button.
+          </p>
+        </details>
+
+        <details>
+          <summary><strong>How does the AI tweak feature work?</strong></summary>
+          <p>
+            Open Settings, paste your OpenAI API key (stored only in your browser), pick a tone
+            and number of variants, then click <em>Tweak with AI</em> on any sentence. The tool
+            returns several human-sounding variants you can apply with one click.
+          </p>
+        </details>
+
+        <details>
+          <summary><strong>Will I lose my work on refresh?</strong></summary>
+          <p>
+            No. Every edit is saved to <code>localStorage</code> automatically. Reload the page and
+            everything — your full draft, every sentence edit, your current position, and the final
+            output — is restored.
+          </p>
+        </details>
+
+        <details>
+          <summary><strong>Who is this tool for?</strong></summary>
+          <p>
+            Anyone who wants AI-assisted text to read naturally: writers, content creators,
+            marketers, students, non-native speakers polishing English drafts, and developers
+            cleaning up generated documentation.
+          </p>
+        </details>
+      </section>
     </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-inner">
+        <p>
+          <strong>Manual Humanizer</strong> · A free, open-source sentence-by-sentence text
+          humanizer. Built by
+          <a href="https://github.com/TheRitikYadav" rel="noopener" target="_blank">Ritik Yadav</a>.
+        </p>
+        <p class="footer-links">
+          <a href="https://github.com/TheRitikYadav/Manual-Humanizer" rel="noopener" target="_blank">GitHub</a>
+          <span aria-hidden="true">·</span>
+          <a href="https://github.com/TheRitikYadav/Manual-Humanizer#readme" rel="noopener" target="_blank">Documentation</a>
+          <span aria-hidden="true">·</span>
+          <a href="https://github.com/TheRitikYadav/Manual-Humanizer/issues" rel="noopener" target="_blank">Report an issue</a>
+        </p>
+      </div>
+    </footer>
 
     <div class="popover hidden" id="synonymPopover" role="dialog" aria-label="Synonyms">
       <div class="popover-header">
@@ -175,6 +447,6 @@
 
     <div class="toast hidden" id="toast"></div>
 
-    <script src="app.js"></script>
+    <script src="app.js" defer></script>
   </body>
 </html>

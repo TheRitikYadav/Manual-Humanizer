@@ -1,0 +1,21 @@
+{
+  "name": "Manual Humanizer",
+  "short_name": "Humanizer",
+  "description": "Free browser-based tool to humanize AI-generated text sentence-by-sentence with thesaurus and optional OpenAI rewrites.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6fb",
+  "theme_color": "#2563eb",
+  "lang": "en",
+  "categories": ["productivity", "utilities", "education"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
